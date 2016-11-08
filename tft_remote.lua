@@ -36,27 +36,42 @@ function draw_pixel(args)
 	disp:drawPixel(xI, yI)
 end
 
-function draw_string(input)
+function draw_string(input, offset)
 	disp:setColor(0, 255, 255, 255) -- Get rid of this, do in setup + give seperate call
 
 	string = tostring(input)
-	words = split(string, " ")
-	disp:drawString(240, 300, 2, string)
+	disp:drawString(240, (320 - offset), 2, string)
 end
 
-function getLongestSentance(words)
-	sentance = ""
-	last_sentance = sentance
-	for word in words do
-		sentance = sentance..word
-		if disp:getStrWidth(sentance) < disp:getWidth() then
-			return last_sentance, words
-		else 
-			last_sentance = sentance
-			table.remove(words, word)
-		end
-	end	
+function printString(string)
+	strings = split(string, " ")
+	printLongest(strings, "", 20)
 end
+
+function printLongest(stack, buffer, offset) 
+
+	if next(stack) == nil then
+		return
+	end
+
+	fullStack = table.concat(stack, " ")
+	s = table.remove(stack, 1)
+	buffer = buffer..s.." "
+	if disp:getStrWidth(fullStack) <= disp:getWidth() then --I do not like this
+		offset = offset + 20
+		draw_string(fullStack, offset)
+		return
+	elseif disp:getStrWidth(buffer) < disp:getWidth() then
+		printLongest(stack, buffer, offset)
+	else
+		return
+	end
+	draw_string(buffer, offset)
+
+	offset = offset + 20
+	printLongest(stack, "", offset)
+end
+
 
 
 function handle_message(client, topic, data) 
@@ -72,7 +87,8 @@ function handle_message(client, topic, data)
 	elseif cmd == "clear" then
 		disp:clearScreen()
 	elseif cmd == "print" then
-		draw_string(data)
+		string = tostring(data)
+		printString(string)
 	end
 end
 
@@ -104,4 +120,4 @@ m:on("message",
 		handle_message(client, topic, data)
 	end)
 
-m:connect("192.168.1.8")
+m:connect("192.168.1.12")
