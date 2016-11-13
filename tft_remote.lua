@@ -89,7 +89,7 @@ function handle_message(client, topic, data)
 		disp:clearScreen()
 	elseif cmd == "print" then
 		string = tostring(data)
-		printString(string)
+		printStringLandscape(string)
 	end
 end
 
