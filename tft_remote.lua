@@ -36,43 +36,44 @@ function draw_pixel(args)
 	disp:drawPixel(xI, yI)
 end
 
-function draw_string(input, offset)
+function draw_string(input, offset, orien)
 	disp:setColor(0, 255, 255, 255) -- Get rid of this, do in setup + give seperate call
 
 	string = tostring(input)
-	disp:drawString(240, (320 - offset), 2, string)
-end
-
-function printString(string)
-	strings = split(string, " ")
-	printLongest(strings, "", 20)
-end
-
-function printLongest(stack, buffer, offset) 
-
-	if next(stack) == nil then
-		return
+	if orien == 3 then
+		disp:drawString((0 + offset), 320, orien, string)
+	elseif orien == 2 then 
+		disp:drawString(240, (320 - offset), orien, string) 
 	end
 
-	fullStack = table.concat(stack, " ")
-	s = table.remove(stack, 1)
-	buffer = buffer..s.." "
-	if disp:getStrWidth(fullStack) <= disp:getWidth() then --I do not like this
-		offset = offset + 20
-		draw_string(fullStack, offset)
-		return
-	elseif disp:getStrWidth(buffer) < disp:getWidth() then
-		printLongest(stack, buffer, offset)
-	else
-		return
-	end
-	draw_string(buffer, offset)
-
-	offset = offset + 20
-	printLongest(stack, "", offset)
 end
 
+function printStringPortrait(string)
+	printString(string, 2, disp:getWidth())
+end
 
+function printStringLandscape(string)
+	printString(string, 3, disp:getHeight())
+end
+
+function printString(string, orientation, maxWidth)
+	stack = split(string, " ")
+
+	buffer = ""
+	offset = 20
+	for k,v in pairs(stack) do
+		nxt = buffer.." "..v
+		if disp:getStrWidth(nxt) < maxWidth then
+			buffer = nxt
+		else
+			draw_string(buffer, offset, orientation)
+			offset = offset + 20
+			buffer = " "..v
+		end
+	end
+	draw_string(buffer, offset, orientation)
+
+end
 
 function handle_message(client, topic, data) 
 	t = tostring(topic) --is this conversion needed?
