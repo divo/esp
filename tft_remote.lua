@@ -66,6 +66,7 @@ function printString(string, orientation, maxWidth)
 		if disp:getStrWidth(nxt) < maxWidth then
 			buffer = nxt
 		else
+			tmr.delay(100) --Slow down the I/O. This might be because I'm outputting on Pin 2.
 			draw_string(buffer, offset, orientation)
 			offset = offset + 20
 			buffer = " "..v
