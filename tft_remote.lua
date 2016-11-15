@@ -8,9 +8,6 @@
 --100k on LED line
 
 
-topic_root = "test/display/"
-
-
 function init_spi_display()
 
 	local cs = 8 --pull down 10k to GND
@@ -110,16 +107,6 @@ disp:begin(ucg.FONT_MODE_TRANSPARENT)
 disp:setFont(ucg.font_ncenR14_hr)
 disp:clearScreen()
 
-m = mqtt.Client("espNode", 120, "", "")
-m:on("connect",
-	function()
-		print("connected")
-		m:subscribe(topic_root.."#", 0, print("subscribed to pixel"))
-	end)
-
-m:on("message",
-	function(client, topic, data)
-		handle_message(client, topic, data)
-	end)
-
-m:connect("192.168.1.12")
+require("mqtt_service.lua")
+client = configureSubscriber("test/display", handle_message)
+client:connect("192.168.1.12")
