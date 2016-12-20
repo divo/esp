@@ -20,6 +20,7 @@ function draw_pixel(args)
 end
 
 function draw_string(input, offset, orien)
+	disp:setFont(ucg.font_ncenR14_hr)
 	disp:setColor(0, 255, 255, 255) -- Get rid of this, do in setup + give seperate call
 
 	string = tostring(input)

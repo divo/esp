@@ -1,6 +1,6 @@
 require("tft_setup")
-init_spi_display()
-setupScreen()
+--init_spi_display()
+--setupScreen()
 
 function setupClockFont() 
 	disp:setFont(ucg.font_ncenB24_tr)
@@ -44,17 +44,31 @@ ustamp = 0
 tz=1
 udptimer = 2
 udptimeout=1000
-
+timestamp = 0
 function getTime()
-	sntp.sync(ntpServer),
+	sntp.sync(ntpServer,
 		function(sec, usec, server)
-			clearTime(timeString(hour, minute, second))
-			hour,minue,second = convertTime(sec)
-			drawTime(timeString(hour, minute, second))
-		end
+			updateTimestamp(sec)
+		end)
 end
 
+function updateTimestamp(seconds)
+	clearTimestamp(timestamp)
+	timestamp = seconds
+	drawTimestamp(timestamp)
+end
 
+function clearTimestamp(ts)
+	local hour, minute, second = convertTime(ts)
+	local timeString = timeString(hour, minute, second)
+	clearTime(timeString)
+end
+
+function drawTimestamp(ts)
+	local hour, minute, second = convertTime(ts)
+	local timeString = timeString(hour, minute, second)
+	drawTime(timeString)
+end
 
 function convertTime(sec)
 	local hour = sec % 86400 / 3600
@@ -64,7 +78,19 @@ function convertTime(sec)
 end
 
 function timeString(h,m,s)
-	return string.format("%02u:%02u:%02u",h, m, s)
+	return string.format("%02u:%02u",h, m, s)
+end
+
+function incrementTime()
+	local time = timestamp + 60
+	updateTimestamp(time)
+end
+
+function runClock() 
+	getTime()
+	clockTimer = tmr.create()
+	clockTimer:register(60000, tmr.ALARM_AUTO, incrementTime)
+	clockTimer:start()
 end
 
 function runSNTP(t, timerInterval, syncInterval)

@@ -43,4 +43,4 @@ setupScreen()
 
 require("mqtt_service")
 client = configureSubscriber("test/display", handle_message)
-client:connect("192.168.1.12")
+client:connect("10.16.3.112")
