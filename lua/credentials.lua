@@ -1,0 +1,2 @@
+SSID='VMFB3F43A'
+PASSWORD='6pdrZmsxBhws'

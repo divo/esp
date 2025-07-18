@@ -20,6 +20,7 @@ function draw_pixel(args)
 end
 
 function draw_string(input, offset, orien)
+  print("Drawing: "..input)
 	disp:setFont(ucg.font_ncenR14_hr)
 	disp:setColor(0, 255, 255, 255) -- Get rid of this, do in setup + give seperate call
 
@@ -29,7 +30,6 @@ function draw_string(input, offset, orien)
 	elseif orien == 2 then 
 		disp:drawString(240, (320 - offset), orien, string) 
 	end
-
 end
 
 function printStringPortrait(string)
@@ -40,8 +40,18 @@ function printStringLandscape(string)
 	printString(string, 3, disp:getHeight())
 end
 
+function split(input, sep)
+	res = {}
+	regex = "([^"..sep.."]+)"
+	for token in string.gmatch(input, regex) do
+		table.insert(res, token)
+	end
+	return res
+end
+
 function printString(string, orientation, maxWidth)
 	stack = split(string, " ")
+  print(stack)
 
 	buffer = ""
 	offset = 20
@@ -57,10 +67,11 @@ function printString(string, orientation, maxWidth)
 		end
 	end
 	draw_string(buffer, offset, orientation)
-
 end
 
 require("tft_setup")
+print("Starting display")
+
 init_spi_display()
 setupScreen()
-
+draw_string("Hello world", 50, 3)

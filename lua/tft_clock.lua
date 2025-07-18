@@ -1,6 +1,6 @@
 require("tft_setup")
---init_spi_display()
---setupScreen()
+init_spi_display()
+setupScreen()
 
 function setupClockFont() 
 	disp:setFont(ucg.font_ncenB24_tr)
@@ -86,7 +86,7 @@ function incrementTime()
 	updateTimestamp(time)
 end
 
-function runClock() 
+function runClock()
 	getTime()
 	clockTimer = tmr.create()
 	clockTimer:register(60000, tmr.ALARM_AUTO, incrementTime)
@@ -105,39 +105,4 @@ function runSNTP(t, timerInterval, syncInterval)
 	tmr.start(t)
 end
 	
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+drawTime('15:45')
